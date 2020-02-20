@@ -17,14 +17,19 @@ namespace AggApi.Extensions
 
 		public static void CreateEntryTypes(this IServiceProvider serv)
 		{
-			var repo = serv.GetRequiredService<RepositoryWrapper>();
+			var repo = serv.GetRequiredService<IRepositoryWrapper>();
 			var all = EntryTypeNames.All;
-			var existing = repo.EntryType.Query().Where(et => all.Contains(et.Name)).ToList();
-			if (existing.Count == all.Count)
+			var existing = repo.EntryType.Query().Where(et => all.Contains(et.Name)).Select(et => et.Name).AsEnumerable();
+			if (existing.Count() == all.Count)
 			{
 				return;
 			}
-			
+
+			var toAdd = all.Where(a => !existing.Contains(a)).Select(a => new EntryType
+			{
+				Name = a
+			});
+			repo.EntryType.CreateRangeSave(toAdd);
 		}
 	}
 }

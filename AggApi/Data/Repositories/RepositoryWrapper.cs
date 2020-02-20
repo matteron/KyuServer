@@ -41,17 +41,18 @@ namespace AggApi.Data.Repositories
 
 		public IRepository<TEntity, TKey> Specify<TEntity, TKey>() where TEntity : IEntity<TKey>
 		{
-			//if (typeof(TEntity) == typeof(Entry))
-			//{
-			//	return (IRepository<TEntity, TKey>) Entry;
-			//}
-
-			var lookup = new Dictionary<Type, IRepository<TEntity, TKey>>
+			var type = typeof(TEntity);
+			if (type == typeof(Entry))
 			{
-				{typeof(Entry), (IRepository<TEntity, TKey>) Entry },
-				{typeof(EntryType), (IRepository<TEntity, TKey>) EntryType}
-			};
-			return lookup[typeof(TEntity)];
+				return (IRepository<TEntity, TKey>)Entry;
+			}
+
+			if (type == typeof(EntryType))
+			{
+				return (IRepository<TEntity, TKey>)EntryType;
+			}
+
+			return null;
 		}
 	}
 }

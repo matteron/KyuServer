@@ -52,7 +52,7 @@ namespace AggApi
 				endpoints.MapControllers();
 			});
 
-
+			serv.CreateEntryTypes();
 		}
 	}
 }
