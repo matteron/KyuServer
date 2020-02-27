@@ -1,7 +1,7 @@
+using System;
 using KyuApi.Business.Services.Main;
 using KyuApi.Business.ViewModels.Requests;
 using KyuApi.Controllers.Abstract;
-using KyuApi.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KyuApi.Controllers
@@ -26,5 +26,26 @@ namespace KyuApi.Controllers
         {
             return Ok(_kyuService.CreateEntry(request));
         }
+
+        [HttpPost("/{direction}/{id:Guid}")]
+        public IActionResult UpdateStatus(Guid id, string direction)
+        {
+            var result = _kyuService.UpdateStatus(id, direction);
+            if (result == null) {
+                return BadRequest("Entry not found.");
+            }
+            return Ok(result);
+        }
+
+        [HttpDelete("/{id:Guid}")]
+        public IActionResult DeleteEntry(Guid id)
+        {
+            var result = _kyuService.Delete(id);
+            if (result == null) {
+                return BadRequest("Entry not found.");
+            }
+            return Ok(result);
+        }
+        
     }
 }
