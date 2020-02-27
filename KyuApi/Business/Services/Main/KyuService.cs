@@ -20,7 +20,7 @@ namespace KyuApi.Business.Services.Main
 
         public IEnumerable<EntryViewModel> GetEntries() 
         {
-            return _repo.Entry.Query().ViewModelIncludes().MapEntries();
+            return _repo.Entry.Query().ViewModelIncludes().OrderBy(e => e.CreateDate).MapEntries();
         }
 
         public EntryViewModel CreateEntry(EntryRequest req)
@@ -33,7 +33,36 @@ namespace KyuApi.Business.Services.Main
             }
             _repo.Save();
             entity.EntryType = _repo.EntryType.Find(entity.EntryTypeId);
+            entity.EntryStatus = _repo.EntryStatus.Find(entity.EntryStatusId);
             return entity.Map();
+        }
+
+        public EntryViewModel UpdateEntry(EntryRequest req)
+        {
+	        var entity = _repo.Entry.Query().ViewModelIncludes().FindById(req.Id);
+	        if (entity == null)
+	        {
+		        return null;
+	        }
+	        var changes = req.Map();
+	        entity.Title = changes.Title;
+	        entity.Body = changes.Body;
+	        entity.EntryTypeId = changes.EntryTypeId;
+
+	        var tagIds = req.Tags;
+	        var existingTags = entity.EntryTags.Select(et => et.TagId);
+	        if (tagIds.Any() || existingTags.Any())
+	        {
+		        var toRemove = existingTags.Where(et => !tagIds.Contains(et)).CreateLinks(entity);
+		        var toAdd = tagIds.Where(t => !existingTags.Contains(t)).CreateLinks(entity);
+                _repo.EntryTag.DeleteRange(toRemove);
+                _repo.EntryTag.CreateRange(toAdd);
+            }
+
+	        entity.EntryType = _repo.EntryType.Find(entity.EntryTypeId);
+	        entity.EntryStatus = _repo.EntryStatus.Find(entity.EntryStatusId);
+	        _repo.Entry.UpdateSave(entity);
+	        return entity.Map();
         }
 
         public EntryViewModel UpdateStatus(Guid id, string direction)
@@ -42,13 +71,25 @@ namespace KyuApi.Business.Services.Main
             if (entity == null) {
                 return null;
             }
-            entity.EntryStatusId += (
-                direction == StatusDirections.Elevate
-                ? 1
-                : direction == StatusDirections.Demote
-                    ? -1
-                    : 0);
-            
+
+            if (direction == StatusDirections.Elevate)
+            {
+	            if (entity.EntryStatusId == 3)
+	            {
+		            return null;
+	            }
+
+	            entity.EntryStatusId++;
+            } else if (direction == StatusDirections.Demote)
+            {
+	            if (entity.EntryStatusId == 1)
+	            {
+		            return null;
+	            }
+	            entity.EntryStatusId--;
+            }
+            entity.EntryStatus = _repo.EntryStatus.Find(entity.EntryStatusId);
+
             _repo.Entry.UpdateSave(entity);
             return entity.Map();
         }

@@ -27,7 +27,18 @@ namespace KyuApi.Controllers
             return Ok(_kyuService.CreateEntry(request));
         }
 
-        [HttpPost("/{direction}/{id:Guid}")]
+        [HttpPatch]
+        public IActionResult UpdateEntry([FromBody]EntryRequest request)
+        {
+	        var result = _kyuService.UpdateEntry(request);
+	        if (result == null)
+	        {
+		        return BadRequest("Entry not found.");
+	        }
+	        return Ok(result);
+        }
+
+        [HttpPatch("{direction}/{id:Guid}")]
         public IActionResult UpdateStatus(Guid id, string direction)
         {
             var result = _kyuService.UpdateStatus(id, direction);

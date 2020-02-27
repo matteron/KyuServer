@@ -9,6 +9,7 @@ namespace KyuApi.Business.Services.Main
     {
         IEnumerable<EntryViewModel> GetEntries();
         EntryViewModel CreateEntry(EntryRequest req);
+        EntryViewModel UpdateEntry(EntryRequest req);
         EntryViewModel UpdateStatus(Guid id, string direction);
         EntryViewModel Delete(Guid id);
     }

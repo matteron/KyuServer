@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using KyuApi.Data.Entities.Abstract;
 using KyuApi.Data.Entities.Navigation;
 using KyuApi.Data.Entities.TypeTables;
