@@ -1,4 +1,5 @@
 using System;
+using KyuApi.Business.Services.Main;
 using KyuApi.Data;
 using KyuApi.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -25,6 +26,7 @@ namespace KyuApi
 			services.AddCors(o => o.AddDefaultPolicy(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 			services.AddDbContext<KyuContext>(o => o.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 			services.AddRepositoryWrapper();
+			services.AddScoped<IKyuService, KyuService>();
 			services.AddControllers();
 		}
 

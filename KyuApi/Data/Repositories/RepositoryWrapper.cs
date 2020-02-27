@@ -1,9 +1,12 @@
 ﻿using KyuApi.Data.Entities;
 using KyuApi.Data.Entities.Interfaces;
+using KyuApi.Data.Entities.Navigation;
 using KyuApi.Data.Entities.TypeTables;
 using KyuApi.Data.Repositories.Implementations.EntryRepo;
 using KyuApi.Data.Repositories.Implementations.EntryStatusRepo;
+using KyuApi.Data.Repositories.Implementations.EntryTagRepo;
 using KyuApi.Data.Repositories.Implementations.EntryTypeRepo;
+using KyuApi.Data.Repositories.Implementations.TagRepo;
 using KyuApi.Data.Repositories.Interfaces;
 
 namespace KyuApi.Data.Repositories
@@ -14,6 +17,8 @@ namespace KyuApi.Data.Repositories
 		private IEntryRepository _entry;
 		private IEntryTypeRepository _entryType;
 		private IEntryStatusRepository _entryStatus;
+		private IEntryTagRepository _entryTag;
+		private ITagRepository _tag;
 
 		public IEntryRepository Entry
 		{
@@ -28,6 +33,16 @@ namespace KyuApi.Data.Repositories
 		public IEntryStatusRepository EntryStatus
 		{
 			get { return _entryStatus ??= new EntryStatusRepository(_context); }
+		}
+
+		public IEntryTagRepository EntryTag
+		{
+			get { return _entryTag ??= new EntryTagRepository(_context); }
+		}
+
+		public ITagRepository Tag
+		{
+			get { return _tag ??= new TagRepository(_context); }
 		}
 
 		public RepositoryWrapper(KyuContext context)
@@ -56,6 +71,16 @@ namespace KyuApi.Data.Repositories
 			if (type == typeof(EntryStatus))
 			{
 				return (IRepository<TEntity, TKey>) EntryStatus;
+			}
+
+			if (type == typeof(EntryTag))
+			{
+				return (IRepository<TEntity, TKey>) EntryTag;
+			}
+
+			if (type == typeof(Tag))
+			{
+				return (IRepository<TEntity, TKey>) Tag;
 			}
 
 			return null;

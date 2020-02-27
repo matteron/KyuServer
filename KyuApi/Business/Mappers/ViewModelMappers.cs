@@ -7,11 +7,10 @@ using KyuApi.Business.ViewModels.Abstract;
 using KyuApi.Data.Entities;
 using KyuApi.Data.Entities.Abstract;
 using KyuApi.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 namespace KyuApi.Business.Mappers
 {
-	public static class MappingExtensions
+	public static class ViewModelMappers
 	{
 		public static TypeTableViewModel<TEntity> Map<TEntity>(this TEntity source) where TEntity : TypeTable
 		{
@@ -27,17 +26,22 @@ namespace KyuApi.Business.Mappers
 			return source.Select(Map);
 		}
 
-		public static IEnumerable<EntryViewModel> Map(this IQueryable<Entry> source)
+		public static EntryViewModel Map(this Entry e) 
 		{
-			return source.ViewModelIncludes().Select(e => new EntryViewModel
+			return new EntryViewModel
 			{
 				Id = e.Id,
 				Title = e.Title,
 				Body = e.Body,
-				Status = (EntryStatusViewModel) e.EntryStatus.Map(),
-				Type = (EntryTypeViewModel) e.EntryType.Map(),
-				Tags = (IEnumerable<TagViewModel>) e.EntryTags.Select(et => et.Tag).Map()
-			});
+				Status = e.EntryStatus.Map(),
+				Type = e.EntryType.Map(),
+				Tags = e.EntryTags.Select(et => et.Tag).Map()
+			};
+		}
+
+		public static IEnumerable<EntryViewModel> MapEntries(this IQueryable<Entry> source)
+		{
+			return source.ViewModelIncludes().Select(Map);
 		}
 	}
 }
