@@ -14,6 +14,7 @@ namespace KyuApi.Data
 		public DbSet<EntryStatus> EntryStatuses { get; set; }
 		public DbSet<Tag> Tags { get; set; }
 		public DbSet<EntryTag> EntryTags { get; set; }
+		public DbSet<HashHolder> HashHolders { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{

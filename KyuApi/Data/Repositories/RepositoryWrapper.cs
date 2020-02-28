@@ -6,6 +6,7 @@ using KyuApi.Data.Repositories.Implementations.EntryRepo;
 using KyuApi.Data.Repositories.Implementations.EntryStatusRepo;
 using KyuApi.Data.Repositories.Implementations.EntryTagRepo;
 using KyuApi.Data.Repositories.Implementations.EntryTypeRepo;
+using KyuApi.Data.Repositories.Implementations.HashHolderRepo;
 using KyuApi.Data.Repositories.Implementations.TagRepo;
 using KyuApi.Data.Repositories.Interfaces;
 
@@ -19,6 +20,7 @@ namespace KyuApi.Data.Repositories
 		private IEntryStatusRepository _entryStatus;
 		private IEntryTagRepository _entryTag;
 		private ITagRepository _tag;
+		private IHashHolderRepository _hashHolder;
 
 		public IEntryRepository Entry
 		{
@@ -43,6 +45,11 @@ namespace KyuApi.Data.Repositories
 		public ITagRepository Tag
 		{
 			get { return _tag ??= new TagRepository(_context); }
+		}
+
+		public IHashHolderRepository HashHolder
+		{
+			get { return _hashHolder ??= new HashHolderRepository(_context); }
 		}
 
 		public RepositoryWrapper(KyuContext context)
@@ -81,6 +88,11 @@ namespace KyuApi.Data.Repositories
 			if (type == typeof(Tag))
 			{
 				return (IRepository<TEntity, TKey>) Tag;
+			}
+
+			if (type == typeof(HashHolder))
+			{
+				return (IRepository<TEntity, TKey>) HashHolder;
 			}
 
 			return null;

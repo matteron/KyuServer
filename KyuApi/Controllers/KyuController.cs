@@ -2,10 +2,12 @@ using System;
 using KyuApi.Business.Services.Main;
 using KyuApi.Business.ViewModels.Requests;
 using KyuApi.Controllers.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KyuApi.Controllers
 {
+    [Authorize]
     public class KyuController : CustomController
     {
         private readonly IKyuService _kyuService;
